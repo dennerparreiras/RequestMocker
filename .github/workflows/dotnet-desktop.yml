@@ -29,11 +29,14 @@ jobs:
       with:
         nuget-version: '5.x'
 
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
     - name: Restore dependencies with NuGet
       run: nuget restore $env:Solution_Name
 
     - name: Build
-      run: dotnet build $env:Solution_Name --configuration $env:Configuration
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
 
     - name: Publish
       run: dotnet publish $env:Solution_Name --configuration $env:Configuration --no-build --output ./publish
