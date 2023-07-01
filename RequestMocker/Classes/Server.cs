@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
-using System.Net;
 using System.Text;
 
 namespace RequestMocker.Classes
@@ -131,7 +130,7 @@ namespace RequestMocker.Classes
         /// </summary>
         private void BuildWebHost(string fullUrl, string initialToken, string initialResponseBody, int initialSuccessResponseCode, int initialFailureResponseCode)
         {
-            webHost = new WebHostBuilder()
+            webHost = new Microsoft.AspNetCore.Hosting.WebHostBuilder()
                 .UseKestrel()
                 .UseUrls(fullUrl)
                 .ConfigureServices(services =>
