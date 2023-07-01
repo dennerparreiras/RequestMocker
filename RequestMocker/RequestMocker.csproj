@@ -57,7 +57,7 @@
     <ApplicationIcon>RequestMocker.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>D84378C6752F00461A1A4F9DD369DAD39D402AE2</ManifestCertificateThumbprint>
