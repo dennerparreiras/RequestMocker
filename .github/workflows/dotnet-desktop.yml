@@ -1,4 +1,4 @@
-name: .NET Core Desktop
+name: .NET Framework Build
 
 on:
   push:
@@ -19,16 +19,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 4.7.2
-
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Restore dependencies
-      run: dotnet restore $env:Solution_Name
+      run: msbuild -t:restore $env:Solution_Name
 
     - name: Build
       run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
