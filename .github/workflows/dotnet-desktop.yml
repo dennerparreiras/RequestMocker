@@ -19,19 +19,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.x'
 
     - name: Restore dependencies
-      run: |
-        nuget restore $env:Solution_Name
-        dotnet restore $env:Solution_Name
+      run: dotnet restore $env:Solution_Name
 
     - name: Build
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
+      run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore
+
+    - name: Publish
+      run: dotnet publish $env:Solution_Name --configuration $env:Configuration --no-build --output ./publish
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
         name: Executable
-        path: D:\a\RequestMocker\RequestMocker\RequestMocker\bin\Release\RequestMocker.exe
+        path: ./publish/*
