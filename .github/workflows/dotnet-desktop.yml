@@ -24,8 +24,13 @@ jobs:
       with:
         dotnet-version: '3.1.x'
 
-    - name: Restore dependencies
-      run: dotnet restore $env:Solution_Name
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1
+      with:
+        nuget-version: '5.x'
+
+    - name: Restore dependencies with NuGet
+      run: nuget restore $env:Solution_Name
 
     - name: Build
       run: dotnet build $env:Solution_Name --configuration $env:Configuration
