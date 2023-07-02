@@ -1,48 +1,36 @@
-name: .NET Framework Build
+name: .NET Framework CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
-  Solution_Name: RequestMocker.sln
-  Configuration: Release
+  solution: RequestMocker.sln
+  configuration: Release
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '3.1.x'
-
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1
-      with:
-        nuget-version: '5.x'
+    - uses: actions/checkout@v2
 
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
+      uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Restore dependencies with NuGet
-      run: nuget restore $env:Solution_Name
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.solution }}
 
-    - name: Build
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
+    - name: Build solution
+      run: msbuild ${{ env.solution }} /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU"
 
-    - name: Publish
-      run: dotnet publish $env:Solution_Name --configuration $env:Configuration --no-build --output ./publish
+    - name: Publish application
+      run: msbuild ${{ env.solution }} /t:Publish /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU"
 
-    - name: Upload artifact
+    - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Executable
-        path: ./publish/*
+        name: published-app
+        path: ./RequestMocker/bin/${{ env.configuration }}/publish/
