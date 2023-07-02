@@ -34,4 +34,3 @@ jobs:
       with:
         name: published-app
         path: ./RequestMocker/bin/${{ env.configuration }}/publish/
-
