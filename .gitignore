@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignore 'bin' and 'obj' directories that are created during the build process
+# **/bin/
+# **/obj/
+
+# Ignore specific files related to the project, which are not meant to be committed
+# lastToken
+# requestsLog.txt
