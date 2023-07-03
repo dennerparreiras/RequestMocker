@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  solution: '${{ env.project_name }}.sln'
+  solution: 'RequestMocker.sln'
   configuration: 'Release'
   project_name: 'RequestMocker'
 
