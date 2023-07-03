@@ -2,26 +2,21 @@ name: .NET Framework build
 
 on:
   push:
-    branches: 
-      - main
+    branches: [ main ]
   pull_request:
-    branches: 
-      - main
-  workflow_dispatch:
+    branches: [ main ]
 
 env:
-  solution: RequestMocker.sln
-  configuration: Release
+  solution: 'RequestMocker.sln'
+  configuration: 'Release'
 
 jobs:
   build:
     runs-on: windows-latest
-    env:
-      SOLUTION_PATH: './${{ env.solution }}'
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.0.2
@@ -30,16 +25,16 @@ jobs:
       uses: nuget/setup-nuget@v1.0.5
 
     - name: Restore NuGet packages
-      run: nuget restore ${{ env.SOLUTION_PATH }}
+      run: nuget restore ${{ env.solution }}
 
     - name: Build solution
-      run: msbuild ${{ env.SOLUTION_PATH }} /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU" /m /restore
+      run: msbuild ${{ env.solution }} /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU" /m /restore
 
     - name: Publish application
-      run: msbuild ${{ env.SOLUTION_PATH }} /t:Publish /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU" /p:PublishProfile=FolderProfile.pubxml
+      run: msbuild ${{ env.solution }} /t:Publish /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU"
 
     - name: Archive production artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: published-app
         path: ./RequestMocker/bin/${{ env.configuration }}/publish/
