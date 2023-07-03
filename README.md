@@ -1,4 +1,5 @@
 # RequestMocker
+[![Build and Publish](https://github.com/dennerparreiras/RequestMocker/actions/workflows/dotnet-desktop.yml/badge.svg?branch=master)](https://github.com/dennerparreiras/RequestMocker/actions/workflows/dotnet-desktop.yml)
 
 ## Overview
 
