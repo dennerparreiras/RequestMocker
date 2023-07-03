@@ -9,19 +9,14 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
         dotnet: ['3.1.x']
         include:
           - os: windows-latest
             rid: win-x64
-          - os: ubuntu-latest
-            rid: linux-x64
-          - os: macos-latest
-            rid: osx-x64
 
     steps:
     - name: Checkout
