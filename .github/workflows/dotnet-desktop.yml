@@ -1,44 +1,51 @@
-name: .NET Framework CI
+name: Build and Publish
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
-
-env:
-  solution: RequestMocker.sln
-  configuration: Release
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: windows-latest
-    env:
-      SOLUTION_PATH: './${{ env.solution }}' # Define a variável de ambiente SOLUTION_PATH para evitar repetições
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        dotnet: ['3.1.x']
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: macos-latest
+            rid: osx-x64
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3 # Use a versão mais recente disponível das actions
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.0.2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
 
-      - name: Setup NuGet
-        uses: nuget/setup-nuget@v1.0.5 # Use a action setup-nuget para garantir a versão mais recente do NuGet
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Restore NuGet packages
-        run: nuget restore ${{ env.SOLUTION_PATH }}
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
 
-      - name: Build solution
-        run: msbuild ${{ env.SOLUTION_PATH }} /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU" /m /restore
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
 
-      - name: Publish application
-        run: msbuild ${{ env.SOLUTION_PATH }} /t:Publish /p:Configuration=${{ env.configuration }} /p:Platform="Any CPU" /p:PublishProfile=FolderProfile.pubxml
+    - name: Publish
+      run: dotnet publish --configuration Release --no-restore --self-contained true --runtime ${{ matrix.rid }} --output ./publish
 
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: published-app
-          path: ./RequestMocker/bin/${{ env.configuration }}/publish/
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.rid }}
+        path: |
+          **/publish/
